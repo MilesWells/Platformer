@@ -1,5 +1,7 @@
-import { Actor, Color, vec } from 'excalibur';
+import { Actor, Color, Engine, Input, vec } from 'excalibur';
 import { Resources } from '../../resources';
+
+const BASE_SPEED = 250;
 
 export class Player extends Actor {
 	constructor() {
@@ -11,7 +13,20 @@ export class Player extends Actor {
 		});
 	}
 
+	#speed = BASE_SPEED;
+
 	onInitialize() {
 		this.graphics.use(Resources.Sword.toSprite());
+	}
+
+	update(engine: Engine, delta: number) {
+		super.update(engine, delta);
+
+		const keyIsDownLeft = engine.input.keyboard.isHeld(Input.Keys.Left);
+		const keyIsDownRight = engine.input.keyboard.isHeld(Input.Keys.Right);
+
+		if (keyIsDownLeft) this.vel.x = -this.#speed;
+		if (keyIsDownRight) this.vel.x = this.#speed;
+		if (!keyIsDownRight && !keyIsDownLeft) this.vel.x = 0;
 	}
 }

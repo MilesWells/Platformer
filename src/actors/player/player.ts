@@ -1,4 +1,4 @@
-import { Actor, Color, Engine, Input, vec } from 'excalibur';
+import { Actor, CollisionType, Color, Engine, Input, vec } from 'excalibur';
 import { Resources } from '../../resources';
 
 const BASE_SPEED = 250;
@@ -10,6 +10,7 @@ export class Player extends Actor {
 			width: 25,
 			height: 25,
 			color: new Color(255, 255, 255),
+			collisionType: CollisionType.Active,
 		});
 	}
 

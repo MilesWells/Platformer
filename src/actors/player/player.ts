@@ -6,17 +6,17 @@ import {
 	Engine,
 	Input,
 	PostCollisionEvent,
-	Shape,
 	Side,
 	Timer,
 	vec,
 } from 'excalibur';
-import { Resources } from 'resources';
 
 const BASE_SPEED = 250;
 const BASE_JUMP_POWER = -400;
 const MAX_Y_SPEED_ABS = 600;
 const FRICTION = 0.9;
+const JUMP_COOLDOWN_MS = 500;
+const FLOATY_JUMP_THRESHOLD = 75;
 
 export class Player extends Actor {
 	constructor() {
@@ -27,14 +27,13 @@ export class Player extends Actor {
 			height: 25,
 			color: new Color(255, 255, 255),
 			collisionType: CollisionType.Active,
-			collider: Shape.Box(50, 50),
 		});
 
 		this.#jumpCooldownTimer = new Timer({
 			fcn: () => {
 				this.#jumpCooldown = false;
 			},
-			interval: 250,
+			interval: JUMP_COOLDOWN_MS,
 		});
 	}
 
@@ -44,10 +43,9 @@ export class Player extends Actor {
 	#speed = BASE_SPEED;
 	#jumpPower = BASE_JUMP_POWER;
 	#jumped = false;
-	#hasWallJump = false;
+	#hasWallJump = true;
 
 	onInitialize() {
-		this.graphics.use(Resources.Sword.toSprite());
 		this.scene.addTimer(this.#jumpCooldownTimer);
 
 		this.on('postcollision', this.#onPostCollision);
@@ -70,7 +68,8 @@ export class Player extends Actor {
 	onPreUpdate(engine: Engine, delta: number) {
 		super.onPreUpdate(engine, delta);
 		this.#handleArrowControls(engine);
-		this.#clampVelocity();
+		this.#lessFloatyJump();
+		this.#clampYVelocity();
 	}
 
 	#handleArrowControls(engine: Engine) {
@@ -95,7 +94,14 @@ export class Player extends Actor {
 		}
 	}
 
-	#clampVelocity() {
+	#lessFloatyJump() {
+		const yAbs = Math.abs(this.vel.y);
+		const isUnderThreshold = yAbs < FLOATY_JUMP_THRESHOLD;
+		const isSlowing = yAbs < Math.abs(this.oldVel.y);
+		if (this.#jumped && isUnderThreshold && isSlowing) this.vel.y = 0;
+	}
+
+	#clampYVelocity() {
 		const clampedAbsVelocity = clamp(Math.abs(this.vel.y), 0, MAX_Y_SPEED_ABS);
 		this.vel.y = this.vel.y < 0 ? -clampedAbsVelocity : clampedAbsVelocity;
 	}

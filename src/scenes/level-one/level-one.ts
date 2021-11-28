@@ -6,6 +6,4 @@ export class LevelOne extends Scene {
 		this.add(new Floor(0, 500, 1000));
 		this.add(new Floor(0, 0, 50, 1000));
 	}
-	public onActivate() {}
-	public onDeactivate() {}
 }

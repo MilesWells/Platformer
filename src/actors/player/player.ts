@@ -1,5 +1,6 @@
 import {
 	Actor,
+	clamp,
 	CollisionType,
 	Color,
 	Engine,
@@ -7,12 +8,14 @@ import {
 	PostCollisionEvent,
 	Shape,
 	Side,
+	Timer,
 	vec,
 } from 'excalibur';
 import { Resources } from 'resources';
 
 const BASE_SPEED = 250;
-const BASE_JUMP_POWER = -600;
+const BASE_JUMP_POWER = -400;
+const MAX_Y_SPEED_ABS = 600;
 const FRICTION = 0.9;
 
 export class Player extends Actor {
@@ -26,14 +29,26 @@ export class Player extends Actor {
 			collisionType: CollisionType.Active,
 			collider: Shape.Box(50, 50),
 		});
+
+		this.#jumpCooldownTimer = new Timer({
+			fcn: () => {
+				this.#jumpCooldown = false;
+			},
+			interval: 250,
+		});
 	}
+
+	#jumpCooldown = false;
+	#jumpCooldownTimer;
 
 	#speed = BASE_SPEED;
 	#jumpPower = BASE_JUMP_POWER;
 	#jumped = false;
+	#hasWallJump = false;
 
 	onInitialize() {
 		this.graphics.use(Resources.Sword.toSprite());
+		this.scene.addTimer(this.#jumpCooldownTimer);
 
 		this.on('postcollision', this.#onPostCollision);
 	}
@@ -45,16 +60,20 @@ export class Player extends Actor {
 	#handleFloorCollisions(evt: PostCollisionEvent) {
 		const collidedWithFloor = evt.other.name === 'Floor';
 		const collidedWithTop = evt.side === Side.Bottom;
+		const collidedWithSide = [Side.Left, Side.Right].includes(evt.side);
 
 		if (collidedWithFloor && collidedWithTop) this.#jumped = false;
+		if (collidedWithFloor && collidedWithSide && this.#hasWallJump)
+			this.#jumped = false;
 	}
 
 	onPreUpdate(engine: Engine, delta: number) {
 		super.onPreUpdate(engine, delta);
-		this.#handleArrowControls(engine, delta);
+		this.#handleArrowControls(engine);
+		this.#clampVelocity();
 	}
 
-	#handleArrowControls(engine: Engine, delta: number) {
+	#handleArrowControls(engine: Engine) {
 		const keyIsDownLeft = engine.input.keyboard.isHeld(Input.Keys.Left);
 		const keyIsDownRight = engine.input.keyboard.isHeld(Input.Keys.Right);
 		const keyIsDownUp = engine.input.keyboard.isHeld(Input.Keys.Up);
@@ -67,10 +86,17 @@ export class Player extends Actor {
 			this.vel.x = shouldStop ? 0 : this.oldVel.x * FRICTION;
 		}
 
-		if (keyIsDownUp && !this.#jumped) {
+		if (keyIsDownUp && !this.#jumped && !this.#jumpCooldown) {
 			this.vel.y = this.oldVel.y + this.#jumpPower;
 
 			this.#jumped = true;
+			this.#jumpCooldown = true;
+			this.#jumpCooldownTimer.start();
 		}
+	}
+
+	#clampVelocity() {
+		const clampedAbsVelocity = clamp(Math.abs(this.vel.y), 0, MAX_Y_SPEED_ABS);
+		this.vel.y = this.vel.y < 0 ? -clampedAbsVelocity : clampedAbsVelocity;
 	}
 }

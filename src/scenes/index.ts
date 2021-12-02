@@ -1,5 +1,4 @@
-import { Floor } from 'actors/floor';
-import { Goal } from 'actors/Goal';
+import { Floor, Goal } from 'actors';
 import { vec } from 'excalibur';
 import { LevelConstructorOptions } from './Level';
 

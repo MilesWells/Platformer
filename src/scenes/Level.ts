@@ -1,8 +1,6 @@
-import { Floor } from 'actors/floor';
-import { Goal } from 'actors/Goal';
-import { Player } from 'actors/player/player';
-import { Engine, Scene } from 'excalibur';
-import { Game } from 'game';
+import { Goal, Floor, Player } from 'actors';
+import { Scene } from 'excalibur';
+import { Game } from 'Game';
 
 export interface LevelConstructorOptions {
 	goal?: Goal;

@@ -45,7 +45,8 @@ export class Player extends Actor {
 	#jumped = false;
 	#hasWallJump = true;
 
-	onInitialize() {
+	onInitialize(engine: Engine) {
+		super.onInitialize(engine);
 		this.scene.addTimer(this.#jumpCooldownTimer);
 
 		this.on('postcollision', this.#onPostCollision);

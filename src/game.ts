@@ -20,5 +20,6 @@ export class Game extends Engine {
 
 		const loader = new Loader(Object.values(Resources));
 		await super.start(loader);
+		this.goToScene(this.#scenes[0].name);
 	}
 }

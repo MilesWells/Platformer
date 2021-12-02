@@ -1,16 +1,49 @@
-import { Floor, Goal } from 'actors';
+import { SolidBarrier, Goal } from 'actors';
 import { vec } from 'excalibur';
+import {
+	FLOOR_DEFAULT_WIDTH,
+	FLOOR_DEFAULT_LENGTH,
+	GAME_HEIGHT,
+	GAME_WIDTH,
+} from 'utilities';
 import { LevelConstructorOptions } from './Level';
+
+const BOX = [
+	new SolidBarrier(
+		GAME_WIDTH / 2,
+		GAME_HEIGHT - FLOOR_DEFAULT_WIDTH / 2,
+		GAME_WIDTH,
+		FLOOR_DEFAULT_WIDTH,
+	),
+	new SolidBarrier(
+		GAME_WIDTH / 2,
+		FLOOR_DEFAULT_WIDTH / 2,
+		GAME_WIDTH,
+		FLOOR_DEFAULT_WIDTH,
+	),
+	new SolidBarrier(
+		FLOOR_DEFAULT_WIDTH / 2,
+		GAME_HEIGHT / 2,
+		FLOOR_DEFAULT_WIDTH,
+		GAME_HEIGHT,
+	),
+	new SolidBarrier(
+		GAME_WIDTH - FLOOR_DEFAULT_WIDTH / 2,
+		GAME_HEIGHT / 2,
+		FLOOR_DEFAULT_WIDTH,
+		GAME_HEIGHT,
+	),
+];
 
 const options: LevelConstructorOptions[] = [
 	{
-		goal: new Goal(vec(100, 200), 'Level_2'),
+		goal: new Goal(vec(300, 200), 'Level_2'),
 		sceneKey: 'Level_1',
-		platforms: [new Floor(0, 500, 1000), new Floor(0, 0, 50, 1000)],
+		platforms: [...BOX],
 	},
 	{
 		sceneKey: 'Level_2',
-		platforms: [new Floor(0, 500, 1000)],
+		platforms: [...BOX],
 	},
 ];
 

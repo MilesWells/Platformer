@@ -2,12 +2,17 @@ import { Engine, DisplayMode, Loader } from 'excalibur';
 import { Resources } from 'resources';
 import levelOptions from './scenes';
 import { Level } from 'scenes/Level';
+import { GAME_WIDTH, GAME_HEIGHT } from 'utilities';
 
 export class Game extends Engine {
 	#scenes: Level[];
 
 	constructor() {
-		super({ displayMode: DisplayMode.FitScreen });
+		super({
+			width: GAME_WIDTH,
+			height: GAME_HEIGHT,
+			displayMode: DisplayMode.FitScreen,
+		});
 	}
 
 	public async start() {

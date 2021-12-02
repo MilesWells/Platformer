@@ -1,11 +1,11 @@
-import { Goal, Floor, Player } from 'actors';
+import { Goal, SolidBarrier, Player } from 'actors';
 import { Scene } from 'excalibur';
 import { Game } from 'Game';
 
 export interface LevelConstructorOptions {
 	goal?: Goal;
 	sceneKey: string;
-	platforms: Floor[];
+	platforms: SolidBarrier[];
 }
 
 export class Level extends Scene {
@@ -25,7 +25,6 @@ export class Level extends Scene {
 	public onInitialize(engine: Game) {
 		super.onInitialize(engine);
 		this.add(new Player());
-
 		this.#platforms.forEach(this.add.bind(this));
 		if (this.#goal) this.add(this.#goal);
 	}

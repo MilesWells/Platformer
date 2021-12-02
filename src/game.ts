@@ -1,25 +1,24 @@
 import { Engine, DisplayMode, Loader } from 'excalibur';
 import { Player } from 'actors/player/player';
 import { Resources } from 'resources';
-import { LevelOne } from 'scenes/level-one/level-one';
+import levelOptions from './scenes';
+import { Level } from 'scenes/Level';
 
 export class Game extends Engine {
-	private player: Player;
-	private levelOne: LevelOne;
+	#player: Player;
+	#scenes: Level[];
 
 	constructor() {
 		super({ displayMode: DisplayMode.FitScreen });
 	}
 
-	public start() {
-		this.levelOne = new LevelOne();
-		this.player = new Player();
-		this.levelOne.add(this.player);
-
-		this.add('levelOne', this.levelOne);
+	public async start() {
+		this.#player = new Player();
+		this.#scenes = levelOptions.map(options => new Level(options));
+		this.#scenes[0].add(this.#player);
+		this.#scenes.forEach(scene => this.add(scene.name, scene));
 
 		const loader = new Loader(Object.values(Resources));
-
-		return super.start(loader);
+		await super.start(loader);
 	}
 }

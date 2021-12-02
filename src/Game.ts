@@ -4,7 +4,7 @@ import levelOptions from './scenes';
 import { Level } from 'scenes/Level';
 import { GAME_WIDTH, GAME_HEIGHT } from 'utilities';
 
-export class Game extends Engine {
+export default class Game extends Engine {
 	#scenes: Level[];
 
 	constructor() {

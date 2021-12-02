@@ -1,6 +1,6 @@
 import { Goal, SolidBarrier, Player } from 'actors';
 import { Scene, Vector } from 'excalibur';
-import { Game } from 'Game';
+import Game from 'Game';
 
 export interface LevelConstructorOptions {
 	goal?: Goal;

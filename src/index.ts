@@ -1,5 +1,5 @@
 import { Physics, vec } from 'excalibur';
-import { Game } from 'Game';
+import Game from 'Game';
 
 Physics.acc = vec(0, 800);
 

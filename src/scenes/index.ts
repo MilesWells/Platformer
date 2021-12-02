@@ -38,12 +38,14 @@ const BOX = [
 const options: LevelConstructorOptions[] = [
 	{
 		goal: new Goal(vec(300, 200), 'Level_2'),
-		sceneKey: 'Level_1',
 		platforms: [...BOX],
+		sceneKey: 'Level_1',
+		startingPosition: vec(200, 800),
 	},
 	{
-		sceneKey: 'Level_2',
 		platforms: [...BOX],
+		sceneKey: 'Level_2',
+		startingPosition: vec(200, 800),
 	},
 ];
 

@@ -1,11 +1,12 @@
 import { Goal, SolidBarrier, Player } from 'actors';
-import { Scene } from 'excalibur';
+import { Scene, Vector } from 'excalibur';
 import { Game } from 'Game';
 
 export interface LevelConstructorOptions {
 	goal?: Goal;
-	sceneKey: string;
 	platforms: SolidBarrier[];
+	sceneKey: string;
+	startingPosition: Vector;
 }
 
 export class Level extends Scene {
@@ -14,17 +15,21 @@ export class Level extends Scene {
 
 		this.#platforms = options.platforms;
 		this.#goal = options.goal;
+		this.#startingPosition = options.startingPosition;
 
 		this.sceneKey = options.sceneKey;
 	}
 
 	#platforms;
 	#goal?;
+	#startingPosition;
 	sceneKey;
 
 	public onInitialize(engine: Game) {
 		super.onInitialize(engine);
-		this.add(new Player());
+		const player = new Player(this.#startingPosition);
+		player.vel = Vector.Zero;
+		this.add(player);
 		this.#platforms.forEach(this.add.bind(this));
 		if (this.#goal) this.add(this.#goal);
 	}

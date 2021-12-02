@@ -9,6 +9,7 @@ import {
 	Side,
 	Timer,
 	vec,
+	Vector,
 } from 'excalibur';
 
 const BASE_SPEED = 250;
@@ -19,10 +20,10 @@ const JUMP_COOLDOWN_MS = 500;
 const FLOATY_JUMP_THRESHOLD = 75;
 
 export class Player extends Actor {
-	constructor() {
+	constructor(startingPosition: Vector) {
 		super({
 			name: 'Player',
-			pos: vec(150, 150),
+			pos: startingPosition,
 			width: 25,
 			height: 25,
 			color: new Color(255, 255, 255),

@@ -1,3 +1,4 @@
-export * from './SolidBarrier';
 export * from './Goal';
 export * from './Player';
+export * from './SolidBarrier';
+export * from './Switch';

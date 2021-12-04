@@ -8,7 +8,6 @@ import {
 	PostCollisionEvent,
 	Side,
 	Timer,
-	vec,
 	Vector,
 } from 'excalibur';
 

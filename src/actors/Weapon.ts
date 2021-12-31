@@ -1,5 +1,13 @@
 import { Player } from 'actors';
-import { Actor, ActorArgs, Engine, Sprite, Timer, Vector } from 'excalibur';
+import {
+	Actor,
+	ActorArgs,
+	Engine,
+	Sprite,
+	Timer,
+	vec,
+	Vector,
+} from 'excalibur';
 
 export interface WeaponConstructorOptions {
 	actorArgs?: ActorArgs;
@@ -28,6 +36,8 @@ export abstract class Weapon extends Actor {
 	#oldDirection: 'left' | 'right' = 'right';
 
 	abstract graphic: Sprite;
+	abstract graphicOffsetX: number;
+	abstract graphicOffsetY: number;
 
 	abstract animate(): void;
 
@@ -38,7 +48,9 @@ export abstract class Weapon extends Actor {
 
 		this.scene.addTimer(this.#cooldownTimer);
 
-		this.graphics.show(this.graphic, { anchor: Vector.Left });
+		this.graphics.show(this.graphic, {
+			offset: vec(this.graphicOffsetX, this.graphicOffsetY),
+		});
 	}
 
 	onAttack() {
@@ -59,8 +71,14 @@ export abstract class Weapon extends Actor {
 		this.#direction = movingLeft ? 'left' : 'right';
 		if (this.#player.vel.x === 0) this.#direction = this.#oldDirection;
 
-		if (movingLeft) this.graphics.use(this.graphic, { anchor: Vector.Right });
-		if (movingRight) this.graphics.use(this.graphic, { anchor: Vector.Left });
+		if (movingLeft)
+			this.graphics.use(this.graphic, {
+				offset: vec(-this.graphicOffsetX, this.graphicOffsetY),
+			});
+		if (movingRight)
+			this.graphics.use(this.graphic, {
+				offset: vec(this.graphicOffsetX, this.graphicOffsetY),
+			});
 
 		this.graphic.flipHorizontal = this.#direction === 'left';
 		this.#oldDirection = this.#direction;

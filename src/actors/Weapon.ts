@@ -1,5 +1,13 @@
 import { Player } from 'actors';
-import { Actor, ActorArgs, Engine, Sprite, Timer, vec } from 'excalibur';
+import {
+	Actor,
+	ActorArgs,
+	Engine,
+	Sprite,
+	Timer,
+	vec,
+	Vector,
+} from 'excalibur';
 
 export interface WeaponConstructorOptions {
 	actorArgs?: ActorArgs;
@@ -15,9 +23,6 @@ export abstract class Weapon extends Actor {
 		super(options?.actorArgs);
 
 		this.#cooldownTimer = new Timer({
-			fcn: () => {
-				console.log('weapon cooldown complete');
-			},
 			interval: options?.weaponArgs?.cooldown ?? DEFAULT_WEAPON_COOLDOWN,
 		});
 	}
@@ -31,7 +36,7 @@ export abstract class Weapon extends Actor {
 	abstract graphicOffsetX: number;
 	abstract graphicOffsetY: number;
 
-	abstract animate(): void;
+	abstract attack(): void;
 
 	onInitialize(engine: Engine) {
 		super.onInitialize(engine);
@@ -39,7 +44,9 @@ export abstract class Weapon extends Actor {
 		this.#player = <Player>this.getAncestors().find(a => a.name === 'Player');
 
 		this.scene.addTimer(this.#cooldownTimer);
+		this.#cooldownTimer.start();
 
+		this.graphic.origin = Vector.Right;
 		this.graphics.show(this.graphic, {
 			offset: vec(this.graphicOffsetX, this.graphicOffsetY),
 		});
@@ -48,7 +55,7 @@ export abstract class Weapon extends Actor {
 	onAttack() {
 		if (!this.#cooldownTimer.complete) return;
 		this.#cooldownTimer.start();
-		this.animate();
+		this.attack();
 	}
 
 	onPreUpdate(engine: Engine, delta: number) {

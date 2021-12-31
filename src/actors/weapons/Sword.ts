@@ -5,5 +5,6 @@ export class Sword extends Weapon {
 	graphicOffsetX = 20;
 	graphicOffsetY = 0;
 	graphic = swordSprite;
-	animate() {}
+
+	attack() {}
 }

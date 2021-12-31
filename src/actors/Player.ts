@@ -17,6 +17,7 @@ const BASE_JUMP_POWER = -400;
 const MAX_Y_SPEED_ABS = 600;
 const FRICTION = 0.9;
 const JUMP_COOLDOWN_MS = 500;
+const GLOBAL_ATTACK_COOLDOWN_MS = 500;
 const FLOATY_JUMP_THRESHOLD = 75;
 
 export interface PlayerConstructorOptions {
@@ -36,17 +37,18 @@ export class Player extends Actor {
 		});
 
 		this.#jumpCooldownTimer = new Timer({
-			fcn: () => {
-				this.#jumpCooldown = false;
-			},
 			interval: JUMP_COOLDOWN_MS,
+		});
+
+		this.#globalAttackCooldownTimer = new Timer({
+			interval: GLOBAL_ATTACK_COOLDOWN_MS,
 		});
 
 		this.#weapon = options.weapon;
 	}
 
-	#jumpCooldown = false;
 	#jumpCooldownTimer;
+	#globalAttackCooldownTimer;
 
 	#speed = BASE_SPEED;
 	#jumpPower = BASE_JUMP_POWER;
@@ -58,6 +60,9 @@ export class Player extends Actor {
 	onInitialize(engine: Engine) {
 		super.onInitialize(engine);
 		this.scene.addTimer(this.#jumpCooldownTimer);
+		this.scene.addTimer(this.#globalAttackCooldownTimer);
+		this.#jumpCooldownTimer.start();
+		this.#globalAttackCooldownTimer.start();
 
 		this.scene.add(this.#weapon);
 		this.addChild(this.#weapon);
@@ -82,6 +87,7 @@ export class Player extends Actor {
 	onPreUpdate(engine: Engine, delta: number) {
 		super.onPreUpdate(engine, delta);
 		this.#handleArrowControls(engine);
+		this.#handleAttack(engine);
 		this.#lessFloatyJump();
 		this.#clampYVelocity();
 	}
@@ -99,13 +105,22 @@ export class Player extends Actor {
 			this.vel.x = shouldStop ? 0 : this.oldVel.x * FRICTION;
 		}
 
-		if (keyIsDownUp && !this.#jumped && !this.#jumpCooldown) {
+		if (keyIsDownUp && !this.#jumped && this.#jumpCooldownTimer.complete) {
 			this.vel.y = this.oldVel.y + this.#jumpPower;
 
 			this.#jumped = true;
-			this.#jumpCooldown = true;
 			this.#jumpCooldownTimer.start();
 		}
+	}
+
+	#handleAttack(engine: Engine) {
+		if (!this.#globalAttackCooldownTimer.complete) return;
+
+		const keyisDownAttack = engine.input.keyboard.isHeld(Input.Keys.Q);
+		if (!keyisDownAttack) return;
+
+		this.#globalAttackCooldownTimer.start();
+		this.#weapon.onAttack();
 	}
 
 	#lessFloatyJump() {

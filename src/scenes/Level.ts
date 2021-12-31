@@ -1,4 +1,5 @@
 import { Goal, SolidBarrier, Player } from 'actors';
+import { Sword } from 'actors/weapons/Sword';
 import { Actor, Scene, Vector } from 'excalibur';
 import Game from 'Game';
 
@@ -27,7 +28,10 @@ export class Level extends Scene {
 
 	public onInitialize(engine: Game) {
 		super.onInitialize(engine);
-		const player = new Player(this.#startingPosition);
+		const player = new Player({
+			startingPosition: this.#startingPosition,
+			weapon: new Sword(),
+		});
 		player.vel = Vector.Zero;
 		this.add(player);
 		this.#platforms.forEach(this.add.bind(this));

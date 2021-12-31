@@ -10,6 +10,8 @@ import {
 	Timer,
 	Vector,
 } from 'excalibur';
+import { Weapon } from 'actors';
+import { Sword } from './weapons/Sword';
 
 const BASE_SPEED = 250;
 const BASE_JUMP_POWER = -400;
@@ -18,11 +20,16 @@ const FRICTION = 0.9;
 const JUMP_COOLDOWN_MS = 500;
 const FLOATY_JUMP_THRESHOLD = 75;
 
+export interface PlayerConstructorOptions {
+	startingPosition: Vector;
+	weapon?: Weapon;
+}
+
 export class Player extends Actor {
-	constructor(startingPosition: Vector) {
+	constructor(options: PlayerConstructorOptions) {
 		super({
 			name: 'Player',
-			pos: startingPosition,
+			pos: options.startingPosition,
 			width: 25,
 			height: 25,
 			color: new Color(255, 255, 255),
@@ -35,6 +42,8 @@ export class Player extends Actor {
 			},
 			interval: JUMP_COOLDOWN_MS,
 		});
+
+		this.#weapon = options.weapon;
 	}
 
 	#jumpCooldown = false;
@@ -45,9 +54,14 @@ export class Player extends Actor {
 	#jumped = false;
 	#hasWallJump = true;
 
+	#weapon;
+
 	onInitialize(engine: Engine) {
 		super.onInitialize(engine);
 		this.scene.addTimer(this.#jumpCooldownTimer);
+
+		this.scene.add(this.#weapon);
+		this.addChild(this.#weapon);
 
 		this.on('postcollision', this.#onPostCollision);
 	}

@@ -11,7 +11,6 @@ import {
 	Vector,
 } from 'excalibur';
 import { Weapon } from 'actors';
-import { Sword } from './weapons/Sword';
 
 const BASE_SPEED = 250;
 const BASE_JUMP_POWER = -400;
@@ -22,7 +21,7 @@ const FLOATY_JUMP_THRESHOLD = 75;
 
 export interface PlayerConstructorOptions {
 	startingPosition: Vector;
-	weapon?: Weapon;
+	weapon: Weapon;
 }
 
 export class Player extends Actor {

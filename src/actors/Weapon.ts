@@ -1,13 +1,5 @@
 import { Player } from 'actors';
-import {
-	Actor,
-	ActorArgs,
-	Engine,
-	Sprite,
-	Timer,
-	vec,
-	Vector,
-} from 'excalibur';
+import { Actor, ActorArgs, Engine, Sprite, Timer, vec } from 'excalibur';
 
 export interface WeaponConstructorOptions {
 	actorArgs?: ActorArgs;

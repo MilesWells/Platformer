@@ -1,5 +1,5 @@
 import { SolidBarrier, Player } from 'actors';
-import { Sword } from 'actors/weapons/Sword';
+import { Sword } from 'actors/weapons';
 import { Actor, Scene, Vector } from 'excalibur';
 import Game from 'Game';
 

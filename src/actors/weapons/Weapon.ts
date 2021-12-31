@@ -28,8 +28,8 @@ export abstract class Weapon extends Actor {
 	}
 
 	#cooldownTimer;
-	#player: Player;
-	#direction: 'left' | 'right' = 'right';
+	player: Player;
+	direction: 'left' | 'right' = 'right';
 	#oldDirection: 'left' | 'right' = 'right';
 
 	abstract graphic: Sprite;
@@ -41,7 +41,7 @@ export abstract class Weapon extends Actor {
 	onInitialize(engine: Engine) {
 		super.onInitialize(engine);
 
-		this.#player = <Player>this.getAncestors().find(a => a.name === 'Player');
+		this.player = <Player>this.getAncestors().find(a => a.name === 'Player');
 
 		this.scene.addTimer(this.#cooldownTimer);
 		this.#cooldownTimer.start();
@@ -64,11 +64,11 @@ export abstract class Weapon extends Actor {
 	}
 
 	#updateGraphic() {
-		const movingLeft = this.#player.vel.x < 0;
-		const movingRight = this.#player.vel.x > 0;
+		const movingLeft = this.player.vel.x < 0;
+		const movingRight = this.player.vel.x > 0;
 
-		this.#direction = movingLeft ? 'left' : 'right';
-		if (this.#player.vel.x === 0) this.#direction = this.#oldDirection;
+		this.direction = movingLeft ? 'left' : 'right';
+		if (this.player.vel.x === 0) this.direction = this.#oldDirection;
 
 		if (movingLeft)
 			this.graphics.use(this.graphic, {
@@ -79,7 +79,7 @@ export abstract class Weapon extends Actor {
 				offset: vec(this.graphicOffsetX, this.graphicOffsetY),
 			});
 
-		this.graphic.flipHorizontal = this.#direction === 'left';
-		this.#oldDirection = this.#direction;
+		this.graphic.flipHorizontal = this.direction === 'left';
+		this.#oldDirection = this.direction;
 	}
 }

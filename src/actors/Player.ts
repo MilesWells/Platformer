@@ -10,7 +10,7 @@ import {
 	Timer,
 	Vector,
 } from 'excalibur';
-import { Weapon } from 'actors';
+import { Weapon } from 'actors/weapons';
 
 const BASE_SPEED = 250;
 const BASE_JUMP_POWER = -400;
